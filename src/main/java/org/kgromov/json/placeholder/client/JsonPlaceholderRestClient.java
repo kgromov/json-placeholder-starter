@@ -1,4 +1,4 @@
-package org.kgromov.client;
+package org.kgromov.json.placeholder.client;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,6 +1,6 @@
-package org.kgromov.client;
+package org.kgromov.json.placeholder.client;
 
-import org.kgromov.model.Comment;
+import org.kgromov.json.placeholder.model.Comment;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.client.RestClient;
 

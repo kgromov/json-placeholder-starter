@@ -1,8 +1,8 @@
-package org.kgromov;
+package org.kgromov.json.placeholder;
 
-import org.kgromov.client.CommentClient;
-import org.kgromov.client.PostClient;
-import org.kgromov.client.UserClient;
+import org.kgromov.json.placeholder.client.CommentClient;
+import org.kgromov.json.placeholder.client.PostClient;
+import org.kgromov.json.placeholder.client.UserClient;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;

@@ -1,6 +1,6 @@
-package org.kgromov.client;
+package org.kgromov.json.placeholder.client;
 
-import org.kgromov.model.User;
+import org.kgromov.json.placeholder.model.User;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 

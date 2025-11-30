@@ -1,4 +1,4 @@
-package org.kgromov;
+package org.kgromov.json.placeholder;
 
 
 import org.springframework.boot.context.properties.ConfigurationProperties;

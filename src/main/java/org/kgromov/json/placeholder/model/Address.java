@@ -1,4 +1,4 @@
-package org.kgromov.model;
+package org.kgromov.json.placeholder.model;
 
 public record Address(
         String street,
