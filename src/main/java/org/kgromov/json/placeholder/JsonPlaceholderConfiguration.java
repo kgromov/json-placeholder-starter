@@ -8,6 +8,11 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestClient;
 
+/**
+ * Configuration class for JSON Placeholder API
+ *
+ * Configures all JSON Placeholder clients as well as RestClient bean
+ */
 @EnableConfigurationProperties(JsonPlaceholderServiceProperties.class)
 @AutoConfiguration
 public class JsonPlaceholderConfiguration {

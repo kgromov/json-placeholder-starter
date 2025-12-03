@@ -1,5 +1,8 @@
 package org.kgromov.json.placeholder.model;
 
+/**
+ * User model - managed entity
+ */
 public record User(
         long id,
         String name,

@@ -6,13 +6,16 @@ import org.springframework.web.client.RestClient;
 
 import java.util.List;
 
+/**
+ * A Client for Comment model
+ */
 public class CommentClient extends JsonPlaceholderRestClient<Comment> {
 
     public CommentClient(RestClient restClient) {
         super(restClient);
     }
 
-    public List<Comment> getCommentsByPostId(long postId) {
+    public List<Comment> getPostComments(long postId) {
         log.debug("getCommentsByPostId: postId={}", postId);
         return restClient.get()
                 .uri(uriBuilder -> uriBuilder.path("posts/{id}/comments").build(postId))
