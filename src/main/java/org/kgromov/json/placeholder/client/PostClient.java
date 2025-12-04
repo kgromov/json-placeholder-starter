@@ -7,14 +7,26 @@ import org.springframework.web.client.RestClient;
 import java.util.List;
 
 /**
- * A Client for Post model
+ * Client for interacting with the Post resources in the JSON Placeholder API.
+ * Provides methods to retrieve posts and posts by user.
  */
 public class PostClient extends JsonPlaceholderRestClient<Post> {
 
+    /**
+     * Constructs a new PostClient with the specified RestClient.
+     *
+     * @param restClient the RestClient to be used for HTTP requests
+     */
     public PostClient(RestClient restClient) {
         super(restClient);
     }
 
+    /**
+     * Retrieves all posts for a specific user.
+     *
+     * @param userId the ID of the user to retrieve posts for
+     * @return a list of posts associated with the specified user
+     */
     public List<Post> getUserPosts(long userId) {
         log.debug("getUserPosts: userId={}", userId);
         return restClient.get()
@@ -23,6 +35,9 @@ public class PostClient extends JsonPlaceholderRestClient<Post> {
                 .body(new ParameterizedTypeReference<>() {});
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected String getUri() {
         return "posts";

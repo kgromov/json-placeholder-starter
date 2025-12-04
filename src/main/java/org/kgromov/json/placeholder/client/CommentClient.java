@@ -7,14 +7,26 @@ import org.springframework.web.client.RestClient;
 import java.util.List;
 
 /**
- * A Client for Comment model
+ * Client for interacting with the Comment resources in the JSON Placeholder API.
+ * Provides methods to retrieve comments and comments by post.
  */
 public class CommentClient extends JsonPlaceholderRestClient<Comment> {
 
+    /**
+     * Constructs a new CommentClient with the specified RestClient.
+     *
+     * @param restClient the RestClient to be used for HTTP requests
+     */
     public CommentClient(RestClient restClient) {
         super(restClient);
     }
 
+    /**
+     * Retrieves all comments for a specific post.
+     *
+     * @param postId the ID of the post to retrieve comments for
+     * @return a list of comments associated with the specified post
+     */
     public List<Comment> getPostComments(long postId) {
         log.debug("getCommentsByPostId: postId={}", postId);
         return restClient.get()
@@ -23,6 +35,9 @@ public class CommentClient extends JsonPlaceholderRestClient<Comment> {
                 .body(new ParameterizedTypeReference<>() {});
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected String getUri() {
         return "comments";

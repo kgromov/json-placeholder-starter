@@ -23,9 +23,17 @@ import static java.util.stream.Collectors.joining;
  * @param <T> the type of the entity being managed by the client
  */
 abstract class JsonPlaceholderRestClient<T> {
+    /** The REST client used for making HTTP requests. */
     protected final RestClient restClient;
+    
+    /** Logger instance for the client. */
     protected final Logger log;
 
+    /**
+     * Constructs a new JsonPlaceholderRestClient with the specified RestClient.
+     *
+     * @param restClient the RestClient to be used for HTTP requests
+     */
     JsonPlaceholderRestClient(RestClient restClient) {
         this.restClient = restClient;
         this.log = LoggerFactory.getLogger(this.getClass());
@@ -98,7 +106,7 @@ abstract class JsonPlaceholderRestClient<T> {
      * Retrieves a page of entities.
      * Returns a list of entities in the specified page.
      * Since JSON Placeholder API does not return the total number of pages,
-     * return type is List<T>.
+     * return type is {@code List<T>}.
      *
      * @param pageRequest the page request
      * @return a list of entities in the specified page
