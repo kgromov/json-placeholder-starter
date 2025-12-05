@@ -30,7 +30,7 @@ public class CommentClient extends JsonPlaceholderRestClient<Comment> {
     public List<Comment> getPostComments(long postId) {
         log.debug("getCommentsByPostId: postId={}", postId);
         return restClient.get()
-                .uri(uriBuilder -> uriBuilder.path("posts/{id}/comments").build(postId))
+                .uri(uriBuilder -> uriBuilder.path("posts/{postId}/comments").build(postId))
                 .retrieve()
                 .body(new ParameterizedTypeReference<>() {});
     }

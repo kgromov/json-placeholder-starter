@@ -1,8 +1,6 @@
 package org.kgromov.json.placeholder;
 
-import org.kgromov.json.placeholder.client.CommentClient;
-import org.kgromov.json.placeholder.client.PostClient;
-import org.kgromov.json.placeholder.client.UserClient;
+import org.kgromov.json.placeholder.client.*;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -49,25 +47,36 @@ public class JsonPlaceholderConfiguration {
     }
 
     /**
-     * Creates a PostClient instance.
-     * 
-     * @param restClient the RestClient to be used by the PostClient
-     * @return a new PostClient instance
-     */
-    @Bean
-    PostClient postClient(RestClient restClient) {
-        return new PostClient(restClient);
-    }
-
-    /**
      * Creates a UserClient instance.
-     * 
+     *
      * @param restClient the RestClient to be used by the UserClient
      * @return a new UserClient instance
      */
     @Bean
     UserClient userClient(RestClient restClient) {
         return new UserClient(restClient);
+    }
+
+    /**
+     * Creates a TodoClient instance.
+     *
+     * @param restClient the RestClient to be used by the TodoClient
+     * @return a new TodoClient instance
+     */
+    @Bean
+    TodoClient todoClient(RestClient restClient) {
+        return new TodoClient(restClient);
+    }
+
+    /**
+     * Creates a PostClient instance.
+     *
+     * @param restClient the RestClient to be used by the PostClient
+     * @return a new PostClient instance
+     */
+    @Bean
+    PostClient postClient(RestClient restClient) {
+        return new PostClient(restClient);
     }
 
     /**
@@ -79,5 +88,27 @@ public class JsonPlaceholderConfiguration {
     @Bean
     CommentClient commentClient(RestClient restClient) {
         return new CommentClient(restClient);
+    }
+
+    /**
+     * Creates a AlbumClient instance.
+     *
+     * @param restClient the RestClient to be used by the AlbumClient
+     * @return a new AlbumClient instance
+     */
+    @Bean
+    AlbumClient albumClient(RestClient restClient) {
+        return new AlbumClient(restClient);
+    }
+
+    /**
+     * Creates a PhotoClient instance.
+     *
+     * @param restClient the RestClient to be used by the PhotoClient
+     * @return a new PhotoClient instance
+     */
+    @Bean
+    PhotoClient photoClient(RestClient restClient) {
+        return new PhotoClient(restClient);
     }
 }

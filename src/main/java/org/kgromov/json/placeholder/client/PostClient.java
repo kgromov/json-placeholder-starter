@@ -30,7 +30,7 @@ public class PostClient extends JsonPlaceholderRestClient<Post> {
     public List<Post> getUserPosts(long userId) {
         log.debug("getUserPosts: userId={}", userId);
         return restClient.get()
-                .uri(uriBuilder -> uriBuilder.path("users/{id}/posts").build(userId))
+                .uri(uriBuilder -> uriBuilder.path("users/{userId}/posts").build(userId))
                 .retrieve()
                 .body(new ParameterizedTypeReference<>() {});
     }
