@@ -9,9 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>org.kgromov</groupId>
+    <groupId>io.github.kgromov</groupId>
     <artifactId>json-placeholder-starter</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
+    <packaging>jar</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
     <description>A Spring Boot Starter for easy integration with the JSON Placeholder API</description>
@@ -71,7 +72,6 @@
         </dependency>
     </dependencies>
 
-
     <build>
         <plugins>
             <plugin>
@@ -106,7 +106,7 @@
                     <waitUntil>published</waitUntil>
                 </configuration>
             </plugin>
-            <!-- TODO: add profile -->
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
@@ -149,4 +149,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>
