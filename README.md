@@ -1,4 +1,4 @@
-# JSON Placeholder Spring Boot Starter
+# JSON Placeholder Spring Boot Starter https://maven-badges.sml.io/sonatype-central/io.github.kgromov/json-placeholder-starter/badge.svg
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
