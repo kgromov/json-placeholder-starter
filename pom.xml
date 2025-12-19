@@ -100,7 +100,7 @@
                 <version>0.9.0</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <publishingServerId>central</publishingServerId>
+                    <publishingServerId>ossrh</publishingServerId>
                     <checksums>required</checksums>
                     <autoPublish>true</autoPublish>
                     <waitUntil>published</waitUntil>
