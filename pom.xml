@@ -94,19 +94,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.sonatype.central</groupId>
-                <artifactId>central-publishing-maven-plugin</artifactId>
-                <version>0.9.0</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <publishingServerId>ossrh</publishingServerId>
-                    <checksums>required</checksums>
-                    <autoPublish>true</autoPublish>
-                    <waitUntil>published</waitUntil>
-                    <centralSnapshotsUrl>https://oss.sonatype.org/content/repositories/snapshots</centralSnapshotsUrl>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 
@@ -115,6 +102,19 @@
             <id>release</id>
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>0.9.0</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <publishingServerId>ossrh</publishingServerId>
+                            <checksums>required</checksums>
+                            <autoPublish>true</autoPublish>
+                            <waitUntil>published</waitUntil>
+                            <centralSnapshotsUrl>https://oss.sonatype.org/content/repositories/snapshots</centralSnapshotsUrl>
+                        </configuration>
+                    </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
