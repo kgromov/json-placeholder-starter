@@ -1,4 +1,4 @@
-name: release.yml
+name:  Publish to the Maven Central
 on:
   release:
     branches:
