@@ -11,16 +11,21 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Print release version
-        run: |
-          echo "Release version ${{ github.event.inputs.release_version }}!"
       - name: Checkout project
         uses: actions/checkout@v5
+
+      - name: Generate changelog
+        id: changelog
+        uses: metcalfc/changelog-generator@v4
+        with:
+          myToken: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
-          tag: ${{ github.event.inputs.release_version }}
           name: Release ${{ github.event.inputs.release_version }}
+          tag: ${{ github.event.inputs.release_version }}
+          allowUpdates: true
           generateReleaseNotes: true
           body: |
             Grab the new version from Maven central https://repo1.maven.org/maven2/io/github/kgromov/json-placeholder-starter/${{ inputs.release_version }}
@@ -34,4 +39,7 @@ jobs:
             	</dependency>
             </dependencies>
             ```
+            
+            ### Changes:
+            ${{ steps.changelog.outputs.changelog }}
           token: ${{ secrets.GITHUB_TOKEN }}
