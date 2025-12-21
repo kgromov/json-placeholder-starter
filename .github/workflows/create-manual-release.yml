@@ -8,20 +8,20 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Print release version
         run: |
           echo "Release version ${{ github.event.inputs.release_version }}!"
       - name: Checkout project
         uses: actions/checkout@v5
-      - name: Create GitHub Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create Release
+        uses: ncipollo/release-action@v1
         with:
-          tag_name: ${{ github.event.inputs.release_version }}
-          release_name: ${{ github.event.inputs.release_version }}
+          tag: ${{ github.event.inputs.release_version }}
+          name: Release ${{ github.event.inputs.release_version }}
+          generateReleaseNotes: true
           body: |
             Grab the new version from Maven central https://repo1.maven.org/maven2/io/github/kgromov/json-placeholder-starter/${{ inputs.release_version }}
             
@@ -34,5 +34,4 @@ jobs:
             	</dependency>
             </dependencies>
             ```
-          draft: false
-          prerelease: false
+          token: ${{ secrets.GITHUB_TOKEN }}
