@@ -1,0 +1,38 @@
+name: Create GitHub release
+on:
+  workflow_dispatch:
+    inputs:
+      release_version:
+        description: 'Release version'
+        required: true
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print release version
+        run: |
+          echo "Release version ${{ github.event.inputs.release_version }}!"
+      - name: Checkout project
+        uses: actions/checkout@v5
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.event.inputs.release_version }}
+          release_name: ${{ github.event.inputs.release_version }}
+          body: |
+            Grab the new version from Maven central https://repo1.maven.org/maven2/io/github/kgromov/json-placeholder-starter/${{ inputs.release_version }}
+            
+            ```
+            <dependencies>
+            	<dependency>
+            	    <groupId>io.github.kgromov</groupId>
+            	    <artifactId>json-placeholder-starter</artifactId>
+            	    <version>${{ inputs.release_version }}</version>
+            	</dependency>
+            </dependencies>
+            ```
+          draft: false
+          prerelease: false
