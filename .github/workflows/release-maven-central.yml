@@ -9,6 +9,10 @@ on:
       release_version:
         description: 'Release version'
         required: true
+
+permissions:
+  contents: write
+
 jobs:
   publish:
     runs-on: ubuntu-latest
