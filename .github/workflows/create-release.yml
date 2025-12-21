@@ -1,9 +1,10 @@
 name: Create GitHub release
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
       release_version:
         description: 'Release version'
+        type: string
         required: true
 jobs:
   publish:
@@ -13,14 +14,6 @@ jobs:
     steps:
       - name: Checkout project
         uses: actions/checkout@v5
-
-#      - name: Create Release with auto-generated notes
-#        run: |
-#          gh release create ${{ github.ref_name }} \
-#            --title "Release ${{ github.ref_name }}" \
-#            --generate-notes
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Generate changelog
         id: changelog

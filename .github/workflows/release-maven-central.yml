@@ -13,9 +13,12 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - run: |
+      - name: Print release version
+        run: |
           echo "Release version ${{ github.event.inputs.release_version }}!"
-      - uses: actions/checkout@v5
+
+      - name: Checkout project
+        uses: actions/checkout@v5
 
       - name: Set up Maven Central Repository
         uses: actions/setup-java@v5
@@ -38,7 +41,9 @@ jobs:
           MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
-#      - name: Create Release
-#        uses: ./.github/actions/create-release
-#        with:
-#          release_version: ${{ github.event.inputs.release_version }}
+  create_release:
+    needs:
+      - publish
+    uses: ./.github/workflows/create-release.yml
+    with:
+      release_version: ${{ github.event.inputs.release_version }}
