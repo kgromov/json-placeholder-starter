@@ -1,0 +1,31 @@
+name: Create GitHub release
+description: Create GitHub release after publishing to Maven Central
+inputs:
+  release_version:
+    description: 'Date to get weather for'
+    required: false
+runs:
+  using: 'composite'
+  steps:
+    - name: Create GitHub Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ inputs.release_version }}
+        release_name: ${{ inputs.release_version }}
+        body: |
+          Grab the new version from Maven central https://repo1.maven.org/maven2/io/github/kgromov/json-placeholder-starter/${{ inputs.release_version }}
+
+          ```
+          <dependencies>
+          	<dependency>
+          	    <groupId>io.github.kgromov</groupId>
+          	    <artifactId>json-placeholder-starter</artifactId>
+          	    <version>${{ inputs.release_version }}</version>
+          	</dependency>
+          </dependencies>
+          ```
+        draft: false
+        prerelease: false

@@ -37,3 +37,8 @@ jobs:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+
+      - name: Create Release
+        uses: ./.github/actions/create-release
+        with:
+          release_version: ${{ github.event.inputs.release_version }}
