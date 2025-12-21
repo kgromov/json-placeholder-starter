@@ -14,11 +14,18 @@ jobs:
       - name: Checkout project
         uses: actions/checkout@v5
 
-      - name: Generate changelog
-        id: changelog
-        uses: metcalfc/changelog-generator@v4
-        with:
-          myToken: ${{ secrets.GITHUB_TOKEN }}
+#      - name: Generate changelog
+#        id: changelog
+#        uses: metcalfc/changelog-generator@v4
+#        with:
+#          myToken: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create Release with auto-generated notes
+        run: |
+          gh release create ${{ github.ref_name }} \
+            --title "Release ${{ github.ref_name }}" \
+            --generate-notes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Release
         uses: ncipollo/release-action@v1
