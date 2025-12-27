@@ -1,0 +1,32 @@
+name:  test-versions.workflow
+on:
+  push:
+    branches:
+      - feature/*
+  workflow_dispatch:
+    inputs:
+      release_version:
+        description: 'Release version'
+        required: true
+        default: '1.0.1'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print release version
+        run: |
+          echo "Release version ${{ github.event.inputs.release_version }}!"
+
+      - name: Checkout project
+        uses: actions/checkout@v5
+
+      - name: Get current version
+        id: current_version
+        run: |
+          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Current version: $VERSION"
