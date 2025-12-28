@@ -1,25 +1,22 @@
-name:  test-versions.workflow
+name: test-versions.workflow
 on:
   push:
     branches:
       - feature/*
-  workflow_dispatch:
-    inputs:
-      release_version:
-        description: 'Release version'
-        required: true
-        default: '1.0.1'
 
 permissions:
   contents: write
 
 jobs:
-  publish:
+  update-version:
     runs-on: ubuntu-latest
     steps:
-      - name: Print release version
+      - name: Set up release version
+        id: new_version
         run: |
-          echo "Release version ${{ github.event.inputs.release_version }}!"
+          VERSION="${{ github.event.inputs.release_version || '1.0.1' }}"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "New release version: $VERSION"
 
       - name: Checkout project
         uses: actions/checkout@v5
@@ -30,3 +27,19 @@ jobs:
           VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Current version: $VERSION"
+
+      - name: Set projects Maven version to GitHub Action GUI set version
+        if: success() && steps.current_version.outputs.version != steps.new_version.outputs.version
+        run: |
+          echo "Setting new version = ${{ steps.new_version.outputs.version }}"
+          mvn versions:set "-DnewVersion=${{ steps.new_version.outputs.version }}" -DgenerateBackupPoms=false
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit release version
+        run: | 
+          git add pom.xml
+          git commit -m "Prepare release (${{ github.actor }}): ${{ steps.new_version.outputs.version }}"
