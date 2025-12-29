@@ -1,0 +1,52 @@
+name: next_version
+description: Get next version based on the version type
+inputs:
+  version_type:
+    description: 'Version increment type'
+    required: true
+outputs:
+  version:
+    description: 'Incremented version'
+    value: ${{ steps.new_version.outputs.version }}
+runs:
+  using: 'composite'
+  steps:
+    - name: Get current version
+      id: current_version
+      run: |
+        VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "Current version: $VERSION"
+        echo "version_type: ${{ inputs.version_type }}"
+      shell: bash
+
+    - name: Calculate new version
+      id: new_version
+      run: |
+        CURRENT="${{ steps.current_version.outputs.version }}"
+        CURRENT=${CURRENT%-SNAPSHOT}
+        BUMP="${{ inputs.version_type }}"
+        
+        # Parse version
+        IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
+
+        # Increment based on type
+        case $BUMP in
+          major)
+            MAJOR=$((MAJOR + 1))
+            MINOR=0
+            PATCH=0
+            ;;
+          minor)
+            MINOR=$((MINOR + 1))
+            PATCH=0
+            ;;
+          patch)
+            PATCH=$((PATCH + 1))
+            ;;
+        esac
+
+        NEW_VERSION="$MAJOR.$MINOR.$PATCH"
+        echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+        echo "New release version: $NEW_VERSION"
+      shell: bash
