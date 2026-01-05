@@ -2,9 +2,15 @@ name: Release with publishing to the Maven Central
 on:
   workflow_dispatch:
     inputs:
-      release_version:
-        description: 'Release version: {major, minor, patch}'
+      version_type:
+        description: 'Version increment type'
         required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+        default: 'patch'
 
 permissions:
   contents: write
