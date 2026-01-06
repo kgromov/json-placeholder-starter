@@ -1,6 +1,9 @@
 name: next_version
 description: Get next version based on the version type
 inputs:
+  base_version:
+    description: 'Base version to update from (optional) - if not provided - current version from pom is fetched'
+    required: false
   version_type:
     description: 'Version increment type'
     required: true
@@ -23,7 +26,7 @@ runs:
     - name: Calculate new version
       id: new_version
       run: |
-        CURRENT="${{ steps.current_version.outputs.version }}"
+        CURRENT="${{ inputs.base_version || steps.current_version.outputs.version }}"
         CURRENT=${CURRENT%-SNAPSHOT}
         BUMP="${{ inputs.version_type }}"
         

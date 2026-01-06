@@ -29,6 +29,26 @@ jobs:
       - name: Print next version saved in publish job
         run: |
           echo "Release version = ${{ needs.publish.outputs.release_version }}"
+
+      - name: Checkout project
+        uses: actions/checkout@v5
+
+      - name: Get next Snapshot Version
+        id: next_development
+        uses: ./.github/actions/get-next-version
+        with:
+          base_version: ${{ needs.publish.outputs.release_version }}
+          version_type: 'patch'
+
+      - name: Increment Snapshot version
+        run: |
+          VERSION="${{ steps.next_development.outputs.version }}"
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
+          PATCH=$((PATCH + 1))
+          NEXT_DEV="$MAJOR.$MINOR.$PATCH-SNAPSHOT"
+          echo "Next dev version = $NEXT_DEV"
+          
+
 #    uses: ./.github/workflows/create-release.yml
 #    with:
 #      release_version: ${{ github.event.inputs.release_version }}
