@@ -1,16 +1,6 @@
 name: Release with publishing to the Maven Central
 on:
   workflow_dispatch:
-    inputs:
-      version_type:
-        description: 'Version increment type'
-        required: true
-        type: choice
-        options:
-          - patch
-          - minor
-          - major
-        default: 'patch'
 
 permissions:
   contents: write
@@ -18,18 +8,19 @@ permissions:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    outputs:
+      release_version: ${{ steps.release_version.outputs.version }}
     steps:
       - name: Checkout project
         uses: actions/checkout@v5
 
       - name: Set up release version
-        id: next_version
-        uses: ./.github/actions/get-next-version
-        with:
-          version_type: ${{ github.event.inputs.version_type || 'patch' }}
-
-      - name: Setup release version as Maven project version
-        run: mvn versions:set "-DnewVersion=${{ steps.next_version.outputs.version }}" versions:commit
+        id: release_version
+        run: |
+          mvn -B versions:set versions:commit -DremoveSnapshot
+          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Release version = ${{ steps.release_version.outputs.version }}"
 
       - name: Set up Maven Config
         uses: actions/setup-java@v5
@@ -55,9 +46,9 @@ jobs:
       - publish
     uses: ./.github/workflows/create-release.yml
     with:
-      release_version: ${{ github.event.inputs.release_version }}
+      release_version: ${{ needs.publish.outputs.release_version }}
 
-  update-next-development:
+  update-next-snapshot:
     needs:
       - create_release
     runs-on: ubuntu-latest
@@ -65,7 +56,7 @@ jobs:
       - name: Checkout project
         uses: actions/checkout@v5
 
-      - name: Increment Snapshot Version
+      - name: Set next Snapshot Version
         run: | 
           mvn versions:set versions:commit -DnextSnapshot 
 
@@ -78,4 +69,4 @@ jobs:
         run: |
           git add pom.xml
           git commit -m "(${{ github.actor }}): Increment next development version"
-          git push origin master
+          git push -u origin master
