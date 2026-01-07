@@ -6,20 +6,23 @@ on:
 permissions:
   contents: write
 
+
 jobs:
   publish:
     runs-on: ubuntu-latest
     outputs:
-      release_version: ${{ steps.next_version.outputs.version }}
+      release_version: ${{ steps.release_version.outputs.version }}
     steps:
       - name: Checkout project
         uses: actions/checkout@v5
 
       - name: Set up release version
-        id: next_version
-        uses: ./.github/actions/get-next-version
-        with:
-          version_type: ${{ github.event.inputs.version_type || 'patch' }}
+        id: release_version
+        run: |
+          mvn -B versions:set versions:commit -DremoveSnapshot
+          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Release version = ${{ steps.release_version.outputs.version }}"
 
   create_release:
     runs-on: ubuntu-latest
@@ -29,49 +32,27 @@ jobs:
       - name: Print next version saved in publish job
         run: |
           echo "Release version = ${{ needs.publish.outputs.release_version }}"
+          #    uses: ./.github/workflows/create-release.yml
+      #    with:
+      #      release_version: ${{ needs.publish.outputs.release_version }}
 
       - name: Checkout project
         uses: actions/checkout@v5
 
-      - name: Get next Snapshot Version
-        id: next_development
-        uses: ./.github/actions/get-next-version
-        with:
-          base_version: ${{ needs.publish.outputs.release_version }}
-          version_type: 'patch'
-
       - name: Increment Snapshot version
         run: |
-          VERSION="${{ steps.next_development.outputs.version }}"
-          IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
-          PATCH=$((PATCH + 1))
-          NEXT_DEV="$MAJOR.$MINOR.$PATCH-SNAPSHOT"
-          echo "Next dev version = $NEXT_DEV"
+          mvn versions:set versions:commit -DnextSnapshot
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config --type bool push.autoSetupRemote true
+      # May use stefanzweifel/git-auto-commit-action instead with pr against master
+      - name: Commit release version
+        run: |
+         git add pom.xml
+          git commit -m "(${{ github.actor }}): Increment next development version"
+          git push origin
           
 
-#    uses: ./.github/workflows/create-release.yml
-#    with:
-#      release_version: ${{ github.event.inputs.release_version }}
-#
-#  update-next-development:
-#    needs:
-#      - create_release
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout project
-#        uses: actions/checkout@v5
-#
-#      - name: Increment Snapshot Version
-#        run: |
-#          mvn versions:set versions:commit -DnextSnapshot
-#
-#      - name: Configure Git
-#        run: |
-#          git config user.name "github-actions[bot]"
-#          git config user.email "github-actions[bot]@users.noreply.github.com"
-#      # May use stefanzweifel/git-auto-commit-action instead with pr against master
-#      - name: Commit release version
-#        run: |
-#          git add pom.xml
-#          git commit -m "(${{ github.actor }}): Increment next development version"
-#          git push origin master
