@@ -20,26 +20,26 @@ jobs:
           mvn -B versions:set versions:commit -DremoveSnapshot
           VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "Release version = ${{ steps.release_version.outputs.version }}"
+          echo "Release version = $VERSION"
 
-      - name: Set up Maven Config
-        uses: actions/setup-java@v5
-        with:
-          java-version: '25'
-          distribution: oracle
-          cache: 'maven'
-          server-id: ossrh
-          server-username: MAVEN_USERNAME
-          server-password: MAVEN_PASSWORD
-          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
-          gpg-passphrase: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
-
-      - name: Publish to Maven Central
-        run: mvn --batch-mode clean deploy -P release -DskipTests=true
-        env:
-          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+  #      - name: Set up Maven Config
+  #        uses: actions/setup-java@v5
+  #        with:
+  #          java-version: '25'
+  #          distribution: oracle
+  #          cache: 'maven'
+  #          server-id: ossrh
+  #          server-username: MAVEN_USERNAME
+  #          server-password: MAVEN_PASSWORD
+  #          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+  #          gpg-passphrase: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+  #
+  #      - name: Publish to Maven Central
+  #        run: mvn --batch-mode clean deploy -P release -DskipTests=true
+  #        env:
+  #          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+  #          MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+  #          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
   create_release:
     needs:
@@ -48,25 +48,25 @@ jobs:
     with:
       release_version: ${{ needs.publish.outputs.release_version }}
 
-  update-next-snapshot:
-    needs:
-      - create_release
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout project
-        uses: actions/checkout@v5
-
-      - name: Set next Snapshot Version
-        run: | 
-          mvn versions:set versions:commit -DnextSnapshot 
-
-      - name: Configure Git
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-      # May use stefanzweifel/git-auto-commit-action instead with pr against master
-      - name: Commit release version
-        run: |
-          git add pom.xml
-          git commit -m "(${{ github.actor }}): Increment next development version"
-          git push -u origin master
+#  update-next-snapshot:
+#    needs:
+#      - create_release
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout project
+#        uses: actions/checkout@v5
+#
+#      - name: Set next Snapshot Version
+#        run: |
+#          mvn versions:set versions:commit -DnextSnapshot
+#
+#      - name: Configure Git
+#        run: |
+#          git config user.name "github-actions[bot]"
+#          git config user.email "github-actions[bot]@users.noreply.github.com"
+#      # May use stefanzweifel/git-auto-commit-action instead with pr against master
+#      - name: Commit release version
+#        run: |
+#          git add pom.xml
+#          git commit -m "(${{ github.actor }}): Increment next development version"
+#          git push -u origin master

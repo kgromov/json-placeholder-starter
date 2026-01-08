@@ -7,13 +7,18 @@ on:
         type: string
         required: true
 jobs:
-  publish:
+  release:
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
       - name: Checkout project
         uses: actions/checkout@v5
+
+      - name: Print release version
+        run: |
+          echo "inputs.release_version = ${{ inputs.release_version }}"
+          echo "github.event.inputs.release_version = ${{ github.event.inputs.release_version }}"
 
       - name: Generate changelog
         id: changelog
@@ -24,8 +29,8 @@ jobs:
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
-          name: Release ${{ github.event.inputs.release_version }}
-          tag: ${{ github.event.inputs.release_version }}
+          name: Release ${{ inputs.release_version }}
+          tag: ${{ inputs.release_version }}
           allowUpdates: true
           generateReleaseNotes: true
           body: |
