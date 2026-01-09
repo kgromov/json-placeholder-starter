@@ -1,0 +1,17 @@
+name: Create GitHub release
+on:
+  push:
+    branches:
+      - master
+      - release/*
+      - feature/*
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v5
+
+      - name: Build project
+        run: |
+          mvn clean verify
