@@ -7,7 +7,7 @@ A Spring Boot Starter for easy integration with the [JSON Placeholder](https://j
 
 ## Features
 
-- Auto-configuration for JSON Placeholder REST client
+- Autoconfiguration for JSON Placeholder REST client
 - Support for all JSON Placeholder resources (Posts, Comments, Users, etc.)
 - Easy-to-use client interfaces
 - Support pagination and sorting
@@ -22,7 +22,7 @@ Add the following dependency to your `pom.xml`:
 <dependency>
     <groupId>org.kgromov</groupId>
     <artifactId>json-placeholder-spring-boot-starter</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.3</version>
 </dependency>
 ```
 
