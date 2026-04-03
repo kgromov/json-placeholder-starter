@@ -12,12 +12,8 @@ jobs:
       - name: Checkout project
         uses: actions/checkout@v5
 
-      - name: Set up Maven Config
-        uses: actions/setup-java@v5
-        with:
-          java-version: '25'
-          distribution: 'oracle'
-          cache: 'maven'
+      - name: Install Java
+        uses: ./.github/actions/install-java
 
       - name: Build project
         run: |
