@@ -48,6 +48,11 @@ jobs:
     with:
       release_version: ${{ needs.publish.outputs.release_version }}
 
+  release-github-packages:
+    needs:
+      - publish
+    uses: ./.github/workflows/release-github-packages.yml
+
   update-next-snapshot:
     needs:
       - create_release

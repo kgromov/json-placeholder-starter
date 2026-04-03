@@ -3,7 +3,9 @@ name: Javadoc
 on:
   push:
     branches:
-    - 'feature/*'
+      - master
+#      - release/*
+#      - feature/*
   workflow_dispatch:
 
 permissions:
