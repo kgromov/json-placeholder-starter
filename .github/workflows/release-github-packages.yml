@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - release/*
+  workflow_call:
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -15,6 +16,7 @@ jobs:
         with:
           java-version: 25
           distribution: oracle
+          cache: 'maven'
       - name: Publish package
         run: mvn --batch-mode deploy
         env:
