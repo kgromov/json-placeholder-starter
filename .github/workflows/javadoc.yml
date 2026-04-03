@@ -3,7 +3,9 @@ name: Javadoc
 on:
   push:
     branches:
-    - 'feature/*'
+      - master
+#      - release/*
+#      - feature/*
   workflow_dispatch:
 
 permissions:
@@ -16,12 +18,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
-      - name: Setup Java
-        uses: actions/setup-java@v5
-        with:
-          java-version: '25'
-          distribution: oracle
-          cache: 'maven'
+      - name: Install Java
+        uses: ./.github/actions/install-java
+
       - name: Build and generate Javadocs
         run: |
           mvn javadoc:javadoc
