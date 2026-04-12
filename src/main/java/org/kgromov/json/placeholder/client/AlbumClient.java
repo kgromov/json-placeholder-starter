@@ -1,5 +1,6 @@
 package org.kgromov.json.placeholder.client;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kgromov.json.placeholder.model.Album;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.client.RestClient;
@@ -13,12 +14,13 @@ import java.util.List;
 public class AlbumClient extends JsonPlaceholderRestClient<Album> {
 
     /**
-     * Constructs a new PostClient with the specified RestClient.
+     * Constructs a new AlbumClient with the specified RestClient.
      *
      * @param restClient the RestClient to be used for HTTP requests
+     * @param objectMapper the ObjectMapper to be used for JSON serialization/deserialization
      */
-    public AlbumClient(RestClient restClient) {
-        super(restClient);
+    public AlbumClient(RestClient restClient, ObjectMapper objectMapper) {
+        super(restClient, objectMapper);
     }
 
     /**
@@ -27,7 +29,7 @@ public class AlbumClient extends JsonPlaceholderRestClient<Album> {
      * @param userId the ID of the user to retrieve albums for
      * @return a list of albums associated with the specified user
      */
-    public List<Album> getUserPosts(long userId) {
+    public List<Album> getUserAlbums(long userId) {
         log.debug("getUserAlbums: userId={}", userId);
         return restClient.get()
                 .uri(uriBuilder -> uriBuilder.path("users/{userId}/albums").build(userId))
@@ -43,6 +45,9 @@ public class AlbumClient extends JsonPlaceholderRestClient<Album> {
         return "albums";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected Class<Album> getResponseType() {
         return Album.class;

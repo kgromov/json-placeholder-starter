@@ -1,5 +1,6 @@
 package org.kgromov.json.placeholder.client;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kgromov.json.placeholder.model.Comment;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.client.RestClient;
@@ -17,8 +18,8 @@ public class CommentClient extends JsonPlaceholderRestClient<Comment> {
      *
      * @param restClient the RestClient to be used for HTTP requests
      */
-    public CommentClient(RestClient restClient) {
-        super(restClient);
+    public CommentClient(RestClient restClient, ObjectMapper objectMapper) {
+        super(restClient, objectMapper);
     }
 
     /**
@@ -43,6 +44,9 @@ public class CommentClient extends JsonPlaceholderRestClient<Comment> {
         return "comments";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected Class<Comment> getResponseType() {
         return Comment.class;

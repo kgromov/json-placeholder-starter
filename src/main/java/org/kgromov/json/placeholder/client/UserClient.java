@@ -1,5 +1,6 @@
 package org.kgromov.json.placeholder.client;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kgromov.json.placeholder.model.User;
 import org.springframework.web.client.RestClient;
 
@@ -14,8 +15,8 @@ public class UserClient extends JsonPlaceholderRestClient<User> {
      *
      * @param restClient the RestClient to be used for HTTP requests
      */
-    public UserClient(RestClient restClient) {
-        super(restClient);
+    public UserClient(RestClient restClient, ObjectMapper objectMapper) {
+        super(restClient, objectMapper);
     }
 
     /**

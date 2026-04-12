@@ -1,5 +1,6 @@
 package org.kgromov.json.placeholder.client;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kgromov.json.placeholder.model.Post;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.client.RestClient;
@@ -17,8 +18,8 @@ public class PostClient extends JsonPlaceholderRestClient<Post> {
      *
      * @param restClient the RestClient to be used for HTTP requests
      */
-    public PostClient(RestClient restClient) {
-        super(restClient);
+    public PostClient(RestClient restClient, ObjectMapper objectMapper) {
+        super(restClient, objectMapper);
     }
 
     /**
@@ -43,6 +44,9 @@ public class PostClient extends JsonPlaceholderRestClient<Post> {
         return "posts";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected Class<Post> getResponseType() {
         return Post.class;

@@ -1,5 +1,7 @@
 package org.kgromov.json.placeholder.client;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.GenericTypeResolver;
@@ -25,6 +27,7 @@ import static java.util.stream.Collectors.joining;
 abstract class JsonPlaceholderRestClient<T> {
     /** The REST client used for making HTTP requests. */
     protected final RestClient restClient;
+    protected final ObjectMapper objectMapper;
     
     /** Logger instance for the client. */
     protected final Logger log;
@@ -34,8 +37,9 @@ abstract class JsonPlaceholderRestClient<T> {
      *
      * @param restClient the RestClient to be used for HTTP requests
      */
-    JsonPlaceholderRestClient(RestClient restClient) {
+    JsonPlaceholderRestClient(RestClient restClient, ObjectMapper objectMapper) {
         this.restClient = restClient;
+        this.objectMapper = objectMapper;
         this.log = LoggerFactory.getLogger(this.getClass());
     }
 
@@ -159,6 +163,24 @@ abstract class JsonPlaceholderRestClient<T> {
         return restClient.put()
                 .uri(uriBuilder -> uriBuilder.path(this.getUri() + "/{id}").build(id))
                 .body(entity)
+                .retrieve()
+                .body(this.getResponseType());
+    }
+
+    /**
+     * Patches an existing entity.
+     *
+     * @param id the ID of the entity to update
+     * @param entity the entity to update
+     * @return the updated entity
+     */
+    public T patch(long id, T entity) {
+        log.debug("patch({}): entity={}", this.getCurrentType().getSimpleName(), entity);
+        Map<String, Object> body = objectMapper.convertValue(entity, new TypeReference<>() {});
+        log.debug("update request to map = {}", body);
+        return restClient.patch()
+                .uri(uriBuilder -> uriBuilder.path(this.getUri() + "/{id}").build(id))
+                .body(body)
                 .retrieve()
                 .body(this.getResponseType());
     }
