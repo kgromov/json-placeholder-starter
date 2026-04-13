@@ -1,9 +1,7 @@
 package org.kgromov.json.placeholder;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kgromov.json.placeholder.client.*;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -11,10 +9,10 @@ import org.springframework.web.client.RestClient;
 
 /**
  * Configuration class for the JSON Placeholder API client.
- * 
+ *
  * <p>This class provides Spring configuration for all JSON Placeholder API clients
  * and configures the underlying {@link RestClient} with the appropriate base URL.</p>
- * 
+ *
  * <p>It enables configuration properties from {@link JsonPlaceholderServiceProperties}
  * and automatically configures the following beans:</p>
  * <ul>
@@ -38,7 +36,7 @@ public class JsonPlaceholderConfiguration {
 
     /**
      * Creates and configures a RestClient for the JSON Placeholder API.
-     * 
+     *
      * @param properties the configuration properties containing the base URL
      * @return a configured RestClient instance
      */
@@ -50,34 +48,13 @@ public class JsonPlaceholderConfiguration {
     }
 
     /**
-     * Creates and configures a customized ObjectMapper for the JSON Placeholder API.
-     * 
-     * <p>This method creates a copy of the default ObjectMapper and configures it
-     * to exclude null properties during serialization and deserialization.</p>
-     * 
-     * @param objectMapper the default ObjectMapper to copy and customize
-     * @return a configured ObjectMapper instance with null properties excluded
-     */
-    @Bean("jsonPlaceholderObjectMapper")
-    ObjectMapper objectMapper(ObjectMapper objectMapper) {
-        ObjectMapper copy = objectMapper.copy();
-        copy.setDefaultPropertyInclusion(
-                JsonInclude.Value.construct(
-                        JsonInclude.Include.NON_NULL,
-                        JsonInclude.Include.NON_NULL
-                )
-        );
-        return  copy;
-    }
-
-    /**
      * Creates a UserClient instance.
      *
      * @param restClient the RestClient to be used by the UserClient
      * @return a new UserClient instance
      */
     @Bean
-    UserClient userClient(RestClient restClient, @Qualifier("jsonPlaceholderObjectMapper") ObjectMapper objectMapper) {
+    UserClient userClient(RestClient restClient,ObjectMapper objectMapper) {
         return new UserClient(restClient, objectMapper);
     }
 
@@ -88,7 +65,7 @@ public class JsonPlaceholderConfiguration {
      * @return a new TodoClient instance
      */
     @Bean
-    TodoClient todoClient(RestClient restClient, @Qualifier("jsonPlaceholderObjectMapper") ObjectMapper objectMapper) {
+    TodoClient todoClient(RestClient restClient,ObjectMapper objectMapper) {
         return new TodoClient(restClient, objectMapper);
     }
 
@@ -99,18 +76,18 @@ public class JsonPlaceholderConfiguration {
      * @return a new PostClient instance
      */
     @Bean
-    PostClient postClient(RestClient restClient, @Qualifier("jsonPlaceholderObjectMapper") ObjectMapper objectMapper) {
+    PostClient postClient(RestClient restClient,ObjectMapper objectMapper) {
         return new PostClient(restClient, objectMapper);
     }
 
     /**
      * Creates a CommentClient instance.
-     * 
+     *
      * @param restClient the RestClient to be used by the CommentClient
      * @return a new CommentClient instance
      */
     @Bean
-    CommentClient commentClient(RestClient restClient, @Qualifier("jsonPlaceholderObjectMapper") ObjectMapper objectMapper) {
+    CommentClient commentClient(RestClient restClient,ObjectMapper objectMapper) {
         return new CommentClient(restClient, objectMapper);
     }
 
@@ -121,7 +98,7 @@ public class JsonPlaceholderConfiguration {
      * @return a new AlbumClient instance
      */
     @Bean
-    AlbumClient albumClient(RestClient restClient, @Qualifier("jsonPlaceholderObjectMapper") ObjectMapper objectMapper) {
+    AlbumClient albumClient(RestClient restClient,ObjectMapper objectMapper) {
         return new AlbumClient(restClient, objectMapper);
     }
 
@@ -132,7 +109,7 @@ public class JsonPlaceholderConfiguration {
      * @return a new PhotoClient instance
      */
     @Bean
-    PhotoClient photoClient(RestClient restClient, @Qualifier("jsonPlaceholderObjectMapper") ObjectMapper objectMapper) {
+    PhotoClient photoClient(RestClient restClient,ObjectMapper objectMapper) {
         return new PhotoClient(restClient, objectMapper);
     }
 }
