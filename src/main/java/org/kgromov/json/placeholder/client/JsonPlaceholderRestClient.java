@@ -1,5 +1,6 @@
 package org.kgromov.json.placeholder.client;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -39,7 +40,7 @@ abstract class JsonPlaceholderRestClient<T> {
      */
     JsonPlaceholderRestClient(RestClient restClient, ObjectMapper objectMapper) {
         this.restClient = restClient;
-        this.objectMapper = objectMapper;
+        this.objectMapper = this.configureObjectMapper(objectMapper);
         this.log = LoggerFactory.getLogger(this.getClass());
     }
 
@@ -206,6 +207,26 @@ abstract class JsonPlaceholderRestClient<T> {
     @SuppressWarnings("unchecked")
     private Class<T> getCurrentType() {
         return (Class<T>) GenericTypeResolver.resolveTypeArgument(this.getClass(), JsonPlaceholderRestClient.class);
+    }
+
+    /**
+     * Creates and configures a customized ObjectMapper for the JSON Placeholder API.
+     *
+     * <p>This method creates a copy of the default ObjectMapper and configures it
+     * to exclude null properties during serialization and deserialization.</p>
+     *
+     * @param objectMapper the default ObjectMapper to copy and customize
+     * @return a configured ObjectMapper instance with null properties excluded
+     */
+    private ObjectMapper configureObjectMapper(ObjectMapper objectMapper) {
+        ObjectMapper copy = objectMapper.copy();
+        copy.setDefaultPropertyInclusion(
+                JsonInclude.Value.construct(
+                        JsonInclude.Include.NON_NULL,
+                        JsonInclude.Include.NON_NULL
+                )
+        );
+        return copy;
     }
 
     /**
