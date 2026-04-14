@@ -49,30 +49,4 @@ jobs:
     with:
       release_version: ${{ needs.publish.outputs.release_version }}
 
-  release-github-packages:
-    needs:
-      - publish
-    uses: ./.github/workflows/release-github-packages.yml
-
-  update-next-snapshot:
-    needs:
-      - create_release
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout project
-        uses: actions/checkout@v5
-
-      - name: Set next Snapshot Version
-        run: |
-          mvn versions:set versions:commit -DnextSnapshot
-
-      - name: Configure Git
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-      # May use stefanzweifel/git-auto-commit-action instead with pr against master
-      - name: Commit release version
-        run: |
-          git add pom.xml
-          git commit -m "(${{ github.actor }}): Increment next development version"
-          git push -u origin master
+  # update_next_snapshot
