@@ -1,24 +1,18 @@
-name: Publish package to GitHub Packages
+name: Publish snapshots to Maven Central
 on:
   push:
     branches:
       - master
-  workflow_call:
 jobs:
   build:
     uses: ./.github/workflows/build.yml
   publish:
     needs: build
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     steps:
       - uses: actions/checkout@v5
       - name: Install Java
         uses: ./.github/actions/install-java
       - name: Publish package
-        run: mvn --batch-mode deploy -P github -DskipTests=true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: mvn --batch-mode deploy -DskipTests=true
 

@@ -1,6 +1,9 @@
 name: Create GitHub release
 on:
   push:
+    branches-ignore:
+      - master
+  workflow_call:
 jobs:
   build:
     runs-on: ubuntu-latest
