@@ -5,6 +5,7 @@ on:
 permissions:
   contents: write
   packages: write
+  pull-requests: write
 
 jobs:
   publish:
@@ -49,4 +50,17 @@ jobs:
     with:
       release_version: ${{ needs.publish.outputs.release_version }}
 
-  # update_next_snapshot
+  update-next-snapshot:
+    needs:
+      - create_release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v5
+
+      - name: Prepare Next Snapshot
+        uses: ./.github/actions/prepare-next-snapshot
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          actor: ${{ github.actor }}
+          ref_name: ${{ github.ref_name }}

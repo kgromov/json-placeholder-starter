@@ -1,0 +1,58 @@
+name: Prepare Next Snapshot
+description: Increments to next snapshot version and creates a PR to master
+
+inputs:
+  github_token:
+    description: GitHub token for pushing and creating PR
+    required: true
+  actor:
+    description: GitHub actor (username)
+    required: true
+  ref_name:
+    description: Branch ref name
+    required: true
+
+outputs:
+  version:
+    description: Next snapshot version
+    value: ${{ steps.next_snapshot.outputs.version }}
+
+runs:
+  using: composite
+  steps:
+    - name: Reset staging
+      shell: bash
+      run: |
+        git checkout -B staging/${{ inputs.ref_name }}
+
+    - name: Set next Snapshot Version
+      id: next_snapshot
+      shell: bash
+      run: |
+        mvn versions:set versions:commit -DnextSnapshot
+        VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "Next snapshot version = $VERSION"
+
+    - name: Configure Git
+      shell: bash
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+
+    - name: Commit snapshot version
+      shell: bash
+      run: |
+        git add pom.xml
+        git commit -m "(${{ inputs.actor }}): Increment next development version"
+        git push --set-upstream -f origin staging/${{ inputs.ref_name }}
+      env:
+        GITHUB_TOKEN: ${{ inputs.github_token }}
+
+    - name: Create pull-request
+      uses: repo-sync/pull-request@v2
+      with:
+        pr_title: "Prepare next snapshot (${{ inputs.actor }}): ${{ steps.next_snapshot.outputs.version }}"
+        source_branch: "staging/${{ inputs.ref_name }}"
+        destination_branch: master
+        github_token: ${{ inputs.github_token }}

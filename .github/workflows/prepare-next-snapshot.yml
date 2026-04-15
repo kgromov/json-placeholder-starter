@@ -10,43 +10,14 @@ permissions:
 
 jobs:
   update-next-snapshot:
-#    needs:
-#      - create_release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout project
         uses: actions/checkout@v5
 
-      - name: Reset staging
-        id: staging
-        run: |
-          git checkout -B staging/$GITHUB_REF_NAME
-        env:
-          GITHUB_REF_NAME: ${{ github.ref_name }}
-
-      - name: Set next Snapshot Version
-        id: next_snapshot
-        run: |
-          mvn versions:set versions:commit -DnextSnapshot
-          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "Next snapshot version = $VERSION"
-
-      - name: Configure Git
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-      - name: Commit release version
-        run: |
-          git add pom.xml
-          git commit -m "(${{ github.actor }}): Increment next development version"
-          git push --set-upstream -f origin staging/$GITHUB_REF_NAME
-
-      - name: Create pull-request
-        uses: repo-sync/pull-request@v2
+      - name: Prepare Next Snapshot
+        uses: ./.github/actions/prepare-next-snapshot
         with:
-          pr_title: "Prepare next snapshot (${{ github.actor }}): ${{ steps.next_snapshot.outputs.version }}"
-          source_branch: "staging/${{ github.ref_name }}"
-          destination_branch: 'master'
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          actor: ${{ github.actor }}
+          ref_name: ${{ github.ref_name }}
