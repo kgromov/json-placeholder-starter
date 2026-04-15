@@ -5,6 +5,7 @@ on:
 permissions:
   contents: write
   packages: write
+  pull-requests: write
 
 jobs:
   publish:
@@ -49,11 +50,6 @@ jobs:
     with:
       release_version: ${{ needs.publish.outputs.release_version }}
 
-  release-github-packages:
-    needs:
-      - publish
-    uses: ./.github/workflows/release-github-packages.yml
-
   update-next-snapshot:
     needs:
       - create_release
@@ -62,17 +58,9 @@ jobs:
       - name: Checkout project
         uses: actions/checkout@v5
 
-      - name: Set next Snapshot Version
-        run: |
-          mvn versions:set versions:commit -DnextSnapshot
-
-      - name: Configure Git
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-      # May use stefanzweifel/git-auto-commit-action instead with pr against master
-      - name: Commit release version
-        run: |
-          git add pom.xml
-          git commit -m "(${{ github.actor }}): Increment next development version"
-          git push -u origin master
+      - name: Prepare Next Snapshot
+        uses: ./.github/actions/prepare-next-snapshot
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          actor: ${{ github.actor }}
+          ref_name: ${{ github.ref_name }}
