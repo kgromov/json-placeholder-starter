@@ -1,11 +1,11 @@
 package org.kgromov.json.placeholder;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kgromov.json.placeholder.client.*;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestClient;
+import tools.jackson.databind.ObjectMapper;
 
 /**
  * Configuration class for the JSON Placeholder API client.
@@ -54,7 +54,7 @@ public class JsonPlaceholderConfiguration {
      * @return a new UserClient instance
      */
     @Bean
-    UserClient userClient(RestClient restClient,ObjectMapper objectMapper) {
+    UserClient userClient(RestClient restClient, ObjectMapper objectMapper) {
         return new UserClient(restClient, objectMapper);
     }
 
@@ -65,7 +65,7 @@ public class JsonPlaceholderConfiguration {
      * @return a new TodoClient instance
      */
     @Bean
-    TodoClient todoClient(RestClient restClient,ObjectMapper objectMapper) {
+    TodoClient todoClient(RestClient restClient, ObjectMapper objectMapper) {
         return new TodoClient(restClient, objectMapper);
     }
 
@@ -76,7 +76,7 @@ public class JsonPlaceholderConfiguration {
      * @return a new PostClient instance
      */
     @Bean
-    PostClient postClient(RestClient restClient,ObjectMapper objectMapper) {
+    PostClient postClient(RestClient restClient, ObjectMapper objectMapper) {
         return new PostClient(restClient, objectMapper);
     }
 
@@ -87,7 +87,7 @@ public class JsonPlaceholderConfiguration {
      * @return a new CommentClient instance
      */
     @Bean
-    CommentClient commentClient(RestClient restClient,ObjectMapper objectMapper) {
+    CommentClient commentClient(RestClient restClient, ObjectMapper objectMapper) {
         return new CommentClient(restClient, objectMapper);
     }
 
@@ -98,7 +98,7 @@ public class JsonPlaceholderConfiguration {
      * @return a new AlbumClient instance
      */
     @Bean
-    AlbumClient albumClient(RestClient restClient,ObjectMapper objectMapper) {
+    AlbumClient albumClient(RestClient restClient, ObjectMapper objectMapper) {
         return new AlbumClient(restClient, objectMapper);
     }
 
@@ -109,7 +109,7 @@ public class JsonPlaceholderConfiguration {
      * @return a new PhotoClient instance
      */
     @Bean
-    PhotoClient photoClient(RestClient restClient,ObjectMapper objectMapper) {
+    PhotoClient photoClient(RestClient restClient, ObjectMapper objectMapper) {
         return new PhotoClient(restClient, objectMapper);
     }
 }

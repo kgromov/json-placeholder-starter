@@ -1,16 +1,20 @@
 package org.kgromov.json.placeholder.client;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.GenericTypeResolver;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.cfg.MapperBuilder;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
 import java.util.Map;
@@ -26,11 +30,15 @@ import static java.util.stream.Collectors.joining;
  * @param <T> the type of the entity being managed by the client
  */
 abstract class JsonPlaceholderRestClient<T> {
-    /** The REST client used for making HTTP requests. */
+    /**
+     * The REST client used for making HTTP requests.
+     */
     protected final RestClient restClient;
     protected final ObjectMapper objectMapper;
-    
-    /** Logger instance for the client. */
+
+    /**
+     * Logger instance for the client.
+     */
     protected final Logger log;
 
     /**
@@ -48,7 +56,7 @@ abstract class JsonPlaceholderRestClient<T> {
      * Retrieves an entity by its ID.
      *
      * @param id the ID of the entity to retrieve
-     * Defined as long to be compatible with the JSON Placeholder API.
+     *           Defined as long to be compatible with the JSON Placeholder API.
      * @return the entity with the specified ID
      */
     public T getById(long id) {
@@ -78,7 +86,7 @@ abstract class JsonPlaceholderRestClient<T> {
      * Retrieves all entities filtered by query parameters.
      *
      * @param queryParams the query parameters to filter by
-     * with single value for each key.
+     *                    with single value for each key.
      * @return a list of entities filtered by the specified query parameters
      */
     public List<T> getAllByQueryParams(Map<String, String> queryParams) {
@@ -91,7 +99,7 @@ abstract class JsonPlaceholderRestClient<T> {
      * Retrieves all entities filtered by query parameters.
      *
      * @param queryParams the query parameters to filter by
-     * with multiple values for each key.
+     *                    with multiple values for each key.
      * @return a list of entities filtered by the specified query parameters
      */
     public List<T> getAllByQueryParams(MultiValueMap<String, String> queryParams) {
@@ -155,7 +163,7 @@ abstract class JsonPlaceholderRestClient<T> {
     /**
      * Updates an existing entity.
      *
-     * @param id the ID of the entity to update
+     * @param id     the ID of the entity to update
      * @param entity the entity to update
      * @return the updated entity
      */
@@ -171,13 +179,14 @@ abstract class JsonPlaceholderRestClient<T> {
     /**
      * Patches an existing entity.
      *
-     * @param id the ID of the entity to update
+     * @param id     the ID of the entity to update
      * @param entity the entity to update
      * @return the updated entity
      */
     public T patch(long id, T entity) {
         log.debug("patch({}): entity={}", this.getCurrentType().getSimpleName(), entity);
-        Map<String, Object> body = objectMapper.convertValue(entity, new TypeReference<>() {});
+        Map<String, Object> body = objectMapper.convertValue(entity, new TypeReference<>() {
+        });
         log.debug("update request to map = {}", body);
         return restClient.patch()
                 .uri(uriBuilder -> uriBuilder.path(this.getUri() + "/{id}").build(id))
@@ -219,14 +228,9 @@ abstract class JsonPlaceholderRestClient<T> {
      * @return a configured ObjectMapper instance with null properties excluded
      */
     private ObjectMapper configureObjectMapper(ObjectMapper objectMapper) {
-        ObjectMapper copy = objectMapper.copy();
-        copy.setDefaultPropertyInclusion(
-                JsonInclude.Value.construct(
-                        JsonInclude.Include.NON_NULL,
-                        JsonInclude.Include.NON_NULL
-                )
-        );
-        return copy;
+        return JsonMapper.builder()
+                .changeDefaultPropertyInclusion(value -> value.withValueInclusion(JsonInclude.Include.NON_NULL))
+                .build();
     }
 
     /**
@@ -243,7 +247,7 @@ abstract class JsonPlaceholderRestClient<T> {
      * 1-level uri path for the entity being managed by the client.
      * For example, for the Post entity it is "posts".
      *
-     * @return  uri path for the entity
+     * @return uri path for the entity
      */
     protected abstract String getUri();
 
