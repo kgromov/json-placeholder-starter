@@ -1,8 +1,8 @@
 package org.kgromov.json.placeholder.client;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kgromov.json.placeholder.model.User;
 import org.springframework.web.client.RestClient;
+import tools.jackson.databind.ObjectMapper;
 
 /**
  * Client for interacting with the User resources in the JSON Placeholder API.

@@ -1,9 +1,9 @@
 package org.kgromov.json.placeholder.client;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kgromov.json.placeholder.model.Album;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.client.RestClient;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
