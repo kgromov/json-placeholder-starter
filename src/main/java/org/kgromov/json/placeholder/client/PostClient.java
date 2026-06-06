@@ -17,6 +17,7 @@ public class PostClient extends JsonPlaceholderRestClient<Post> {
      * Constructs a new PostClient with the specified RestClient.
      *
      * @param restClient the RestClient to be used for HTTP requests
+     * @param objectMapper the ObjectMapper used for JSON serialization and deserialization
      */
     public PostClient(RestClient restClient, ObjectMapper objectMapper) {
         super(restClient, objectMapper);

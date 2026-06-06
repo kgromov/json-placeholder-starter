@@ -31,6 +31,9 @@ abstract class JsonPlaceholderRestClient<T> {
      * The REST client used for making HTTP requests.
      */
     protected final RestClient restClient;
+    /**
+     * The ObjectMapper used for JSON serialization and deserialization.
+     */
     protected final ObjectMapper objectMapper;
 
     /**

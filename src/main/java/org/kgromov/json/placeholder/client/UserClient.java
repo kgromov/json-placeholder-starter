@@ -14,6 +14,7 @@ public class UserClient extends JsonPlaceholderRestClient<User> {
      * Constructs a new UserClient with the specified RestClient.
      *
      * @param restClient the RestClient to be used for HTTP requests
+     * @param objectMapper the ObjectMapper used for JSON serialization and deserialization
      */
     public UserClient(RestClient restClient, ObjectMapper objectMapper) {
         super(restClient, objectMapper);
