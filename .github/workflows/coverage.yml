@@ -1,0 +1,28 @@
+name: coverage.yml
+on:
+  push:
+    branches:
+      - feature/code-coverage
+  workflow_dispatch:
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v5
+
+      - name: Install Java
+        uses: ./.github/actions/install-java
+
+      - name: Run tests under coverage profile
+        run: |
+          mvn -B test -P coverage --no-transfer-progress
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          files: ./**/target/site/jacoco/jacoco.xml
+          name: codecov
+          token: ${{ secrets.CODECOV_TOKEN }}
