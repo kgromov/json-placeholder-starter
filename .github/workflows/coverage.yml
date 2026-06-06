@@ -2,8 +2,7 @@ name: coverage.yml
 on:
   push:
     branches:
-      - feature/code-coverage
-  workflow_dispatch:
+      - feature/*
 
 jobs:
   coverage:
@@ -20,10 +19,20 @@ jobs:
         run: |
           mvn -B test -P coverage --no-transfer-progress
 
+#      - name: Zip Folder
+#        run: |
+#          zip -r jacoco.zip . -i "**/target/site/jacoco/*"
+
+      - name: Upload jacoco reports
+        uses: actions/upload-artifact@v7
+        with:
+          name: jacoco-report
+          path: "**/target/site/jacoco/"
+          if-no-files-found: error
+
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
         with:
           files: ./**/target/site/jacoco/jacoco.xml
           name: codecov
           token: ${{ secrets.CODECOV_TOKEN }}
-          verbose: 'true'
