@@ -16,7 +16,8 @@ public class CommentClient extends JsonPlaceholderRestClient<Comment> {
     /**
      * Constructs a new CommentClient with the specified RestClient.
      *
-     * @param restClient the RestClient to be used for HTTP requests
+     * @param restClient   the RestClient to be used for HTTP requests
+     * @param objectMapper the ObjectMapper used for JSON serialization and deserialization
      */
     public CommentClient(RestClient restClient, ObjectMapper objectMapper) {
         super(restClient, objectMapper);
@@ -33,7 +34,8 @@ public class CommentClient extends JsonPlaceholderRestClient<Comment> {
         return restClient.get()
                 .uri(uriBuilder -> uriBuilder.path("posts/{postId}/comments").build(postId))
                 .retrieve()
-                .body(new ParameterizedTypeReference<>() {});
+                .body(new ParameterizedTypeReference<>() {
+                });
     }
 
     /**

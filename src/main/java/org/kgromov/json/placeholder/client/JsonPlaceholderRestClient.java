@@ -6,14 +6,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.GenericTypeResolver;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
-import tools.jackson.databind.SerializationFeature;
-import tools.jackson.databind.cfg.MapperBuilder;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
@@ -34,6 +31,9 @@ abstract class JsonPlaceholderRestClient<T> {
      * The REST client used for making HTTP requests.
      */
     protected final RestClient restClient;
+    /**
+     * The ObjectMapper used for JSON serialization and deserialization.
+     */
     protected final ObjectMapper objectMapper;
 
     /**

@@ -1,0 +1,34 @@
+name: coverage.yml
+on:
+  push:
+    branches:
+      - feature/*
+      - master
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v5
+
+      - name: Install Java
+        uses: ./.github/actions/install-java
+
+      - name: Run tests under coverage profile
+        run: |
+          mvn -B test -P coverage --no-transfer-progress
+
+      - name: Upload jacoco reports
+        uses: actions/upload-artifact@v7
+        with:
+          name: jacoco-report
+          path: "**/target/site/jacoco/"
+          if-no-files-found: error
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          files: ./**/target/site/jacoco/jacoco.xml
+          name: codecov
+          token: ${{ secrets.CODECOV_TOKEN }}
