@@ -1,6 +1,6 @@
 # JSON Placeholder Spring Boot Starter 
 ![Maven Central](https://maven-badges.sml.io/sonatype-central/io.github.kgromov/json-placeholder-starter/badge.svg)
-
+[![codecov](https://codecov.io/gh/kgromov/json-placeholder-starter/branch/master/graph/badge.svg)](https://codecov.io/gh/kgromov/json-placeholder-starter)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A Spring Boot Starter for easy integration with the [JSON Placeholder](https://jsonplaceholder.typicode.com/) API.
