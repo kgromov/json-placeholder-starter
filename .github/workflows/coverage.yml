@@ -26,3 +26,4 @@ jobs:
           files: ./**/target/site/jacoco/jacoco.xml
           name: codecov
           token: ${{ secrets.CODECOV_TOKEN }}
+          verbose: 'true'
