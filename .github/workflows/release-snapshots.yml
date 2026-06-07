@@ -24,7 +24,7 @@ jobs:
           server-password: MAVEN_PASSWORD
 
       - name: Publish snapshot to Maven Central
-        run: mvn --batch-mode deploy -DskipTests=true
+        run: mvn --batch-mode deploy -P release -DskipTests=true
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
