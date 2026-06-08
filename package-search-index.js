@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html","k":"18"},{"l":"org.kgromov.json.placeholder"},{"l":"org.kgromov.json.placeholder.client"},{"l":"org.kgromov.json.placeholder.model"}];updateSearchResults();
