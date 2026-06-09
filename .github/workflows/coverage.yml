@@ -2,7 +2,7 @@ name: coverage.yml
 on:
   push:
     branches:
-      - feature/*
+#      - feature/*
       - master
 jobs:
   coverage:
