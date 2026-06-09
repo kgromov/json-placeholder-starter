@@ -21,10 +21,10 @@ jobs:
 
       - name: Build and generate Javadocs
         run: |
-          mvn javadoc:javadoc
+          mvn javadoc:javadoc -P release
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./target/reports/apidocs
+          publish_dir: ./target/site/apidocs
