@@ -21,7 +21,7 @@ jobs:
 
       - name: Build and generate Javadocs
         run: |
-          mvn compile javadoc:javadoc -P release
+          mvn javadoc:javadoc -P release
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
