@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - feature/javadoc-action
   workflow_dispatch:
 
 permissions:
@@ -23,11 +22,6 @@ jobs:
       - name: Build and generate Javadocs
         run: |
           mvn javadoc:javadoc -P release
-
-      - name: Check generated files
-        run: |
-            find ./target -name "*.html" | head -20
-            ls -la ./target/site/apidocs/ || echo "Directory does not exist"
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
