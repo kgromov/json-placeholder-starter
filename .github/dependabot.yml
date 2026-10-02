@@ -5,15 +5,16 @@ updates:
     schedule:
       interval: "weekly"
       day: "monday"
-    allow:
-      - dependency-name: "org.springframework.boot:spring-boot-starter-parent"
+    open-pull-requests-limit: 2
     groups:
+      spring-boot:
+        patterns:
+          - "org.springframework.boot*"
       not-spring-boot:
         patterns:
           - "*"
         exclude-patterns:
           - "org.springframework.boot*"
     ignore:
-      # skip major upgrades
       - dependency-name: "org.springframework.boot:*"
         update-types: ["version-update:semver-major"]
