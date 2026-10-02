@@ -2,7 +2,7 @@ name: Bump Dependency
 on:
   workflow_dispatch:
     inputs:
-      dependency:
+      property:
         description: 'Version property name (e.g. jackson.version). Empty = bump everything'
         type: string
         required: false
@@ -18,6 +18,9 @@ permissions:
 jobs:
   bump-dependency:
     runs-on: ubuntu-latest
+    env:
+      BRANCH: bump/dependencies
+      BASE: ${{ github.event.repository.default_branch }}
     steps:
       - name: Checkout project
         uses: actions/checkout@v5
@@ -25,41 +28,49 @@ jobs:
       - name: Install Java
         uses: ./.github/actions/install-java
 
-      - name: Reset staging
-        shell: bash
-        run: |
-          git checkout -B bump/${{ github.ref_name }}
+      - name: Reset staging branch
+        run: git checkout -B "$BRANCH"
 
-      # Option A: Bump a specific dependency property if you use properties
-      - name: Update Specific Dependency Version
-        if: inputs.dependency != '' && inputs.version != ''
+      - name: Bump specific property
+        if: inputs.property != '' && inputs.version != ''
+        env:
+          PROPERTY: ${{ inputs.property }}
+          VERSION: ${{ inputs.version }}
         run: |
-          mvn versions:set-property -Dproperty=${{ inputs.dependency }} -DnewVersion=${{ inputs.version }}
-#          mvn versions:use-dep-version -Dincludes=${{ inputs.dependency }} -DdepVersion=${{ inputs.version }}
-      # Option B: Or automatically update all dependencies to their latest releases
-      - name: Update All Dependencies to Latest
-        if: inputs.dependency == '' || inputs.version == ''
-        run: mvn versions:use-latest-releases versions:update-parent -DallowMajorUpdates=false
+          mvn -B versions:set-property \
+            -Dproperty="$PROPERTY" -DnewVersion="$VERSION" \
+            -DgenerateBackupPoms=false
 
-      - name: Configure Git
-        shell: bash
+      - name: Bump all dependencies (no majors)
+        if: inputs.property == '' || inputs.version == ''
         run: |
+          mvn -B versions:update-parent -DallowMajorUpdates=false -DgenerateBackupPoms=false
+          mvn -B versions:use-latest-releases -DallowMajorUpdates=false -DgenerateBackupPoms=false
+
+      - name: Commit and push
+        id: commit
+        run: |
+          if git diff --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No changes to commit."
+            exit 0
+          fi
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "chore: bump dependency versions"
+          git push --set-upstream -f origin "$BRANCH"
+          echo "changed=true" >> "$GITHUB_OUTPUT"
 
-      - name: Commit snapshot version
-        shell: bash
-        run: |
-          git add pom.xml
-          git commit -m "chore: bump dependency version in pom.xml"
-          git push --set-upstream -f origin bump/${{ github.ref_name }}
+      - name: Create pull request
+        if: steps.commit.outputs.changed == 'true'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Create pull-request
-        uses: repo-sync/pull-request@v2
-        with:
-          pr_title: "chore: bump dependencies version"
-          source_branch: "bump/${{ github.ref_name }}"
-          destination_branch: master
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if gh pr view "$BRANCH" >/dev/null 2>&1; then
+            echo "PR already exists, branch updated."
+          else
+            gh pr create --base "$BASE" --head "$BRANCH" \
+              --title "chore: bump dependency versions" \
+              --body "Automated dependency bump."
+          fi
