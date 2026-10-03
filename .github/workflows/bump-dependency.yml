@@ -1,0 +1,76 @@
+name: Bump Dependency
+on:
+  workflow_dispatch:
+    inputs:
+      property:
+        description: 'Version property name (e.g. jackson.version). Empty = bump everything'
+        type: string
+        required: false
+      version:
+        description: 'New version (e.g. 2.18.1)'
+        type: string
+        required: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  bump-dependency:
+    runs-on: ubuntu-latest
+    env:
+      BRANCH: bump/dependencies
+      BASE: ${{ github.event.repository.default_branch }}
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v5
+
+      - name: Install Java
+        uses: ./.github/actions/install-java
+
+      - name: Reset staging branch
+        run: git checkout -B "$BRANCH"
+
+      - name: Bump specific property
+        if: inputs.property != '' && inputs.version != ''
+        env:
+          PROPERTY: ${{ inputs.property }}
+          VERSION: ${{ inputs.version }}
+        run: |
+          mvn -B versions:set-property \
+            -Dproperty="$PROPERTY" -DnewVersion="$VERSION" \
+            -DgenerateBackupPoms=false
+
+      - name: Bump all dependencies (no majors)
+        if: inputs.property == '' || inputs.version == ''
+        run: |
+          mvn -B versions:update-parent -DallowMajorUpdates=false -DgenerateBackupPoms=false
+          mvn -B versions:use-latest-releases -DallowMajorUpdates=false -DgenerateBackupPoms=false
+
+      - name: Commit and push
+        id: commit
+        run: |
+          if git diff --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "chore: bump dependency versions"
+          git push --set-upstream -f origin "$BRANCH"
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Create pull request
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if gh pr view "$BRANCH" >/dev/null 2>&1; then
+            echo "PR already exists, branch updated."
+          else
+            gh pr create --base "$BASE" --head "$BRANCH" \
+              --title "chore: bump dependency versions" \
+              --body "Automated dependency bump."
+          fi
